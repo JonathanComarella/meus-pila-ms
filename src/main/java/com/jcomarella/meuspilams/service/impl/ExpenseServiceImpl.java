@@ -4,6 +4,7 @@ import com.jcomarella.meuspilams.dto.ExpenseDto;
 import com.jcomarella.meuspilams.model.Expense;
 import com.jcomarella.meuspilams.repository.ExpenseRepository;
 import com.jcomarella.meuspilams.service.ExpenseService;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -12,16 +13,18 @@ import java.util.UUID;
 public class ExpenseServiceImpl implements ExpenseService {
 
     private final ExpenseRepository expenseRepository;
+    private final ModelMapper modelMapper;
 
-    public ExpenseServiceImpl(ExpenseRepository expenseRepository) {
+    public ExpenseServiceImpl(ExpenseRepository expenseRepository, ModelMapper modelMapper) {
         this.expenseRepository = expenseRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
     public ExpenseDto create(ExpenseDto expenseDto) {
-        Expense expense = new Expense(null, expenseDto.description(), expenseDto.amount(), expenseDto.dueDate(), null);
+        Expense expense = modelMapper.map(expenseDto, Expense.class);
         expense = expenseRepository.save(expense);
-        expenseDto = new ExpenseDto(expense.getId(), expense.getDescription(), expense.getAmount(), expense.getDueDate(), expense.getStatus());
+        expenseDto = modelMapper.map(expense, ExpenseDto.class);
         return expenseDto;
 
     }

@@ -4,6 +4,7 @@ import com.jcomarella.meuspilams.dto.RevenueDto;
 import com.jcomarella.meuspilams.model.Revenue;
 import com.jcomarella.meuspilams.repository.RevenueRepository;
 import com.jcomarella.meuspilams.service.RevenueService;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -12,16 +13,18 @@ import java.util.UUID;
 public class RevenueServiceImpl implements RevenueService {
 
     private final RevenueRepository revenueRepository;
+    private final ModelMapper modelMapper;
 
-    public RevenueServiceImpl(RevenueRepository revenueRepository) {
+    public RevenueServiceImpl(RevenueRepository revenueRepository, ModelMapper modelMapper) {
         this.revenueRepository = revenueRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
     public RevenueDto create(RevenueDto revenueDto) {
-        Revenue revenue = new Revenue(null, revenueDto.description(), revenueDto.amount(), revenueDto.dueDate());
+        Revenue revenue = modelMapper.map(revenueDto, Revenue.class);
         revenue = revenueRepository.save(revenue);
-        revenueDto = new RevenueDto(revenue.getId(), revenue.getDescription(), revenue.getAmount(), revenue.getDueDate());
+        revenueDto = modelMapper.map(revenue, RevenueDto.class);
         return revenueDto;
 
     }
