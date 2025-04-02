@@ -12,6 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.Mockito.*;
@@ -52,6 +54,18 @@ public class ExpenseServiceImplTest {
         verify(modelMapper).map(expenseDto, Expense.class);
         verify(expenseRepository).save(expense);
         verify(modelMapper).map(expense, ExpenseDto.class);
+    }
+
+    @Test
+    void testFindAllExpenses() {
+        List<Expense> expenses = Arrays.asList(new Expense(), new Expense(), new Expense());
+
+        when(expenseRepository.findAll()).thenReturn(expenses);
+
+        List<ExpenseDto> expenseDtos = expenseService.findAll();
+
+        assertNotNull(expenseDtos);
+        assertEquals(expenseDtos.size(), expenses.size());
     }
 
     @Test

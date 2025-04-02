@@ -7,7 +7,9 @@ import com.jcomarella.meuspilams.service.ExpenseService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ExpenseServiceImpl implements ExpenseService {
@@ -32,5 +34,11 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public void delete(UUID id) {
         expenseRepository.deleteById(id);
+    }
+
+    @Override
+    public List<ExpenseDto> findAll() {
+        List<Expense> expenses = expenseRepository.findAll();
+        return expenses.stream().map(expense -> modelMapper.map(expense, ExpenseDto.class)).collect(Collectors.toList());
     }
 }

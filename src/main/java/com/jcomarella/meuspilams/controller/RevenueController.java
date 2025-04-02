@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -19,13 +20,19 @@ public class RevenueController {
     }
 
     @PostMapping
-    public ResponseEntity<RevenueDto> createExpense(@RequestBody RevenueDto revenueDto) {
+    public ResponseEntity<RevenueDto> create(@RequestBody RevenueDto revenueDto) {
         RevenueDto revenue = revenueService.create(revenueDto);
         return new ResponseEntity<>(revenue, HttpStatus.CREATED);
     }
 
+    @GetMapping
+    public ResponseEntity<List<RevenueDto>> getALl() {
+        List<RevenueDto> revenues = revenueService.findAll();
+        return new ResponseEntity<>(revenues, HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<RevenueDto> deleteExpense(@PathVariable UUID id) {
+    public ResponseEntity<RevenueDto> delete(@PathVariable UUID id) {
         revenueService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
